@@ -28,28 +28,28 @@ class productA extends Thread {
 
         System.out.println("Product A" + index + " started!");
         while (a.toolA == true) {
-            System.out.println("Product A" + index + " is waiting for tool A");
+            //wait A
         }
         a.toolA = true;
-        System.out.println("Product A" + index + " is using tool A");
+        //use A
         a.toolA = false;
-        System.out.println("Product A" + index + " finished using tool A");
 
 
         while (a.toolB == true) {
-            System.out.println("Product A" + index + " is waiting for tool B");
+            //wait B
         }
         a.toolB = true;
-        System.out.println("Product A" + index + " is using tool B");
-        System.out.println("Product A" + index + " finished using tool B");
+        //Use B
         //Finish should be here
-        a.toolB = false;
 
         a.finished++;
+        System.out.println("Product A" + index + " finished!");
+
+        a.toolB = false;
         System.out.println("Finished product: " + a.finished);
 
-
     }
+
 }
 
 class productB extends Thread {
@@ -63,26 +63,30 @@ class productB extends Thread {
         System.out.println("Product B" + index + " started!");
 
         while (a.toolA == true) {
-            System.out.println("Product B" + index + " is waiting for tool A");
+            //Wait for A
         }
         a.toolA = true;
-        System.out.println("Product B" + index + " is using tool A");
+
+        //Use A
 
         a.toolA = false;
-        System.out.println("Product B" + index + " finished using tool A");
+
 
         while (a.toolB == true) {
-            System.out.println("Product B" + index + " is waiting for tool B");
-        }
-        a.toolB = true;
-        System.out.println("Product B" + index + " is using tool B");
 
+        }
+
+
+        a.toolB = true;
+
+
+        a.finished++;
+        //useB
+        System.out.println("Product B" + index + " finished!");
 
         a.toolB = false;
-        System.out.println("Product B" + index + " finished using tool B");
-        
-        a.finished++;
         System.out.println("Finished product: " + a.finished);
     }
+
 }
 
