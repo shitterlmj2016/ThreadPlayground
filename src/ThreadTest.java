@@ -7,11 +7,11 @@
 //    public static int finished = 0;
 //
 //    public static void main(String[] args) {
-//        new productB().start();
-//        new productA().start();
-//        new productA().start();
-//        new productB().start();
-//        new productB().start();
+//        new productB().started();
+//        new productA().started();
+//        new productA().started();
+//        new productB().started();
+//        new productB().started();
 //
 //
 //    }

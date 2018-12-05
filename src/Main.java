@@ -8,9 +8,10 @@ public class Main {
         productA a2 = new productA(f);
         productA a3 = new productA(f);
         productA a4 = new productA(f);
-
+        //
         productB b1 = new productB(f);
         productB b2 = new productB(f);
+        productA a5 = new productA(f);
 
         a1.start();
         a2.start();
@@ -18,40 +19,35 @@ public class Main {
         b2.start();
         a3.start();
         a4.start();
+        a5.start();
 
     }
-
 }
 
 class productA extends Thread {
-    Factory fRef;
-    int no;
+    Factory factory;
+    int id;
 
     productA(Factory f) {
-        fRef = f;
+        factory = f;
     }
 
     public void run() {
 
-
-
-        while (fRef.toolA == true) {
-            //wait for tool A
-            //System.out.println("Product A waiting for tool A");
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+        //Acquire Semaphore
+        try {
+            factory.toolA.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
+
         //Critical section
-        fRef.toolA = true;
 
-        no = fRef.start++;
 
-        System.out.println("Product A" + no + " Started!");
+        id = factory.started++;
+
+        System.out.println("Product " + id + " A Started!");
 
         try {
             Thread.sleep(500);
@@ -59,20 +55,23 @@ class productA extends Thread {
             e.printStackTrace();
         }
 
-        fRef.toolA = false;
 
 
-        while (fRef.toolB == true) {
-            //wait for tool B
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+        //Critical Section Ends
+        //Release Semaphore
+
+
+
+
+        factory.toolA.release();
+
+        try {
+            factory.toolB.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-
-        fRef.toolB = true;
 
         try {
             Thread.sleep(400);
@@ -80,13 +79,16 @@ class productA extends Thread {
             e.printStackTrace();
         }
 
-        //Set result and print
-        //synchronized (fRef) {
 
-        fRef.finished++;
-        System.out.println("Product A" + no + " Finished");
-        System.out.println("Total finished products: "+fRef.finished);
-        fRef.toolB = false;
+        //Set result and print
+        //synchronized (factory) {
+
+        factory.finished++;
+        factory.productA++;
+        System.out.println("Product " + id + " A Finished");
+        System.out.println("Total finished products: " + factory.finished + ": A: "+ factory.productA+"; B: "+factory.productB);
+
+        factory.toolB.release();
         //  }
 
     }
@@ -95,46 +97,37 @@ class productA extends Thread {
 
 
 class productB extends Thread {
-    Factory fRef;
-    int no;
+    Factory factory;
+    int id;
 
     productB(Factory f) {
-        fRef = f;
+        factory = f;
     }
 
     public void run() {
 
 
-        while (fRef.toolA == true) {
-            //wait for tool A
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            factory.toolA.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
-        fRef.toolA = true;
-        no = fRef.start++;
-        System.out.println("Product B" + no + " Started!");
+        id = factory.started++;
+        System.out.println("Product " + id + " B Started!");
         try {
             Thread.sleep(600);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        fRef.toolA = false;
+        factory.toolA.release();
 
-        while (fRef.toolB == true) {
-            //wait for tool B
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }//
 
-        fRef.toolB = true;
+        try {
+            factory.toolB.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         try {
             Thread.sleep(300);
@@ -143,12 +136,17 @@ class productB extends Thread {
         }
 
         //Set result and print
-        // synchronized (fRef) {
+        // synchronized (factory) {
 
-        fRef.finished++;
-        System.out.println("Product B" + no + " Finished");
-        System.out.println("Total finished products: "+fRef.finished);
-        fRef.toolB = false;
+        factory.finished++;
+        factory.productB++;
+        System.out.println("Product " + id + " B Finished");
+
+
+
+
+        System.out.println("Total finished products: " + factory.finished + ": A: "+ factory.productA+"; B: "+factory.productB);
+        factory.toolB.release();
         // }
 
     }

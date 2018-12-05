@@ -1,14 +1,25 @@
+import java.util.concurrent.Semaphore;
+
+
 public class Factory {
 
-    public boolean toolA;
-    public boolean toolB;
-    int start;
+    Semaphore toolA;
+    Semaphore toolB;
+
+    int started;
     int finished;
 
+    int productA;
+    int productB;
+
+
     public Factory() {
-        toolA = false;
-        toolB = false;
-        start = 0;
+        toolA = new Semaphore(1);
+        toolB = new Semaphore(1);
+        started = 0;
         finished = 0;
+        productA = 0;
+        productB = 0;
     }
+
 }
